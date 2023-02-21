@@ -6,27 +6,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+;
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
+        this.players = [];
+        this.players = [];
         this.fetchData();
-        this.sortData();
     }
-    fetchData() {
-        fetch('https://api.chess.com/pub/tournament/late-titled-tuesday-blitz-january-31-2023-3732262/11/1')
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Network error from API');
-            }
-            return response.json();
-        })
-            .then(data => {
-            console.log(`Success! Data = ${this.data}`);
-            this.data = data;
-        })
-            .catch(error => console.log(error));
+    async fetchData() {
+        const response = await fetch('https://api.chess.com/pub/tournament/late-titled-tuesday-blitz-january-31-2023-3732262/11/1');
+        console.log(`response = ${response}`);
+        if (!response.ok) {
+            throw new Error('Network error from API');
+        }
+        // const data = await response.json();
+        this.data = await response.json();
+        console.log(`this.data = ${this.data}`);
+        await this.sortData();
+        console.log(`this.players = ${this.players}`);
     }
-    sortData() {
+    async sortData() {
         this.players = this.data.players;
         this.players.sort((a, b) => {
             if (a.is_winner === true && b.is_winner === true)
@@ -45,7 +45,11 @@ let Leaderboard = class Leaderboard extends LitElement {
         return html `
       <div>
         <h3 class="title">Leaderboard</h3>
-        
+        ${this.players.map(player => {
+            return html `
+            <person-details .player=${player}></person-details>
+          `;
+        })}
       </div>
     `;
     }
@@ -57,7 +61,7 @@ __decorate([
     property({ type: Array })
 ], Leaderboard.prototype, "players", void 0);
 Leaderboard = __decorate([
-    customElement('leaderboard')
+    customElement('leader-dashboard')
 ], Leaderboard);
 export { Leaderboard };
 //# sourceMappingURL=leaderboard.js.map

@@ -1,4 +1,9 @@
 import { LitElement } from 'lit';
+export interface playerType {
+    'username': string;
+    'points': number;
+    'is_winner': boolean;
+}
 export declare class Leaderboard extends LitElement {
     data: {
         'games': [];
@@ -10,16 +15,10 @@ export declare class Leaderboard extends LitElement {
             }
         ];
     };
-    players: [
-        {
-            'username': string;
-            'points': number;
-            'is_winner': boolean;
-        }
-    ];
+    players: Array<playerType>;
     constructor();
-    fetchData(): void;
-    sortData(): void;
+    fetchData(): Promise<void>;
+    sortData(): Promise<void>;
     render(): import("lit-html").TemplateResult<1>;
 }
 //# sourceMappingURL=leaderboard.d.ts.map

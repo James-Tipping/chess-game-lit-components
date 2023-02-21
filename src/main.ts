@@ -1,3 +1,2 @@
-import { Leaderboard } from "./elements/leaderboard";
-
-export { Leaderboard }
+import "./elements/leaderboard";
+import './elements/person';
