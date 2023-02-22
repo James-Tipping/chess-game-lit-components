@@ -21,7 +21,7 @@ export class Leaderboard extends LitElement {
   };
 
   @property({ type: Array })
-  players: Array<playerType> = [];
+  players: Array<playerType>; //= [];
 
   constructor() {
     super();
@@ -39,16 +39,16 @@ export class Leaderboard extends LitElement {
     this.data = await response.json();
     console.log(`this.data = ${this.data}`);
     await this.sortData();
-    console.log(`this.players = ${this.players}`)
+    console.log(`this.players = ${this.players}`);
   }
 
   async sortData() {
     this.players = this.data.players;
     this.players.sort((a, b) => {
-      if (a.is_winner === true && b.is_winner === true) return 1
-      if (b.is_winner === true && a.is_winner === false) return -1
-      if (a.points > b.points) return 1
-      if (a.points < b.points) return -1
+      if (a.is_winner === true && b.is_winner === false) return -1
+      if (b.is_winner === true && a.is_winner === false) return 1
+      if (a.points > b.points) return -1
+      if (a.points < b.points) return 1
       else return 0
     })
   }
@@ -59,7 +59,7 @@ export class Leaderboard extends LitElement {
         <h3 class="title">Leaderboard</h3>
         ${this.players.map(player => {
           return html`
-            <person-details .player=${player}></person-details>
+            <person-details .playerData=${player}></person-details>
           `
         })}
       </div>

@@ -11,7 +11,6 @@ let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
         this.players = [];
-        this.players = [];
         this.fetchData();
     }
     async fetchData() {
@@ -29,14 +28,14 @@ let Leaderboard = class Leaderboard extends LitElement {
     async sortData() {
         this.players = this.data.players;
         this.players.sort((a, b) => {
-            if (a.is_winner === true && b.is_winner === true)
-                return 1;
+            if (a.is_winner === true && b.is_winner === false)
+                return -1;
             if (b.is_winner === true && a.is_winner === false)
-                return -1;
-            if (a.points > b.points)
                 return 1;
-            if (a.points < b.points)
+            if (a.points > b.points)
                 return -1;
+            if (a.points < b.points)
+                return 1;
             else
                 return 0;
         });
@@ -47,7 +46,7 @@ let Leaderboard = class Leaderboard extends LitElement {
         <h3 class="title">Leaderboard</h3>
         ${this.players.map(player => {
             return html `
-            <person-details .player=${player}></person-details>
+            <person-details .playerData=${player}></person-details>
           `;
         })}
       </div>
