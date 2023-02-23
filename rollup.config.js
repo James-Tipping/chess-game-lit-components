@@ -8,6 +8,7 @@ import summary from 'rollup-plugin-summary';
 import {terser} from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import image from '@rollup/plugin-image';
 
 export default {
   input: 'main.js',
@@ -34,5 +35,6 @@ export default {
       },
     }),
     summary(),
+    image()
   ],
 };

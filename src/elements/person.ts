@@ -1,23 +1,21 @@
 import { LitElement, html, css } from "lit";
 import { property, customElement } from "lit/decorators.js";
 
+export interface PlayerType {
+  username: string,
+  points: number,
+  is_winner: boolean
+};
+
 @customElement('person-details')
 export class Person extends LitElement {
 
   @property({ type: Object })
-  playerData!: {
-    'username': string,
-    'points': number,
-    'is_winner': boolean
-  };
-
-  // firstUpdated() {
-  //   this.requestUpdate();
-  // }
+  playerData!: PlayerType;
 
   dataComponent = () => {
     if(this.playerData.username) {
-      return html `
+      return html`
       <p>${this.playerData.username}</p>
       <p>${this.playerData.points}</p>
       ${this.playerData.is_winner === true ? html`<img src="./winner.png">` : null}
@@ -26,16 +24,19 @@ export class Person extends LitElement {
       return null
     }
   }
+
+  handleClick (e) {
+    this.dispatchEvent(new CustomEvent('match-requested', {detail: {
+      name: this.playerData.username
+    } }));
+  }
   
 
   render() {
     return html`
-      <div>
+      <div @click="${this.handleClick}">
         ${this.dataComponent()}
       </div>
     `;
   }
-
-  //<a target="_blank" href="https://icons8.com/icon/33486/gold-medal">Gold Medal</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-
 }
