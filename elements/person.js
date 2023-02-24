@@ -6,12 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { LitElement, html } from "lit";
 import { property, customElement } from "lit/decorators.js";
+;
 let Person = class Person extends LitElement {
     constructor() {
         super(...arguments);
-        // firstUpdated() {
-        //   this.requestUpdate();
-        // }
         this.dataComponent = () => {
             if (this.playerData.username) {
                 return html `
@@ -24,12 +22,21 @@ let Person = class Person extends LitElement {
                 return null;
             }
         };
-        //<a target="_blank" href="https://icons8.com/icon/33486/gold-medal">Gold Medal</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+    }
+    handleClick() {
+        console.log("handleClick");
+        this.dispatchEvent(new CustomEvent('match-requested', {
+            detail: {
+                name: this.playerData.username
+            }
+        }));
     }
     render() {
         return html `
       <div>
+        <button @click=${this.handleClick}>
         ${this.dataComponent()}
+        </button>
       </div>
     `;
     }

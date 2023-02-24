@@ -14,7 +14,7 @@ export class Person extends LitElement {
   playerData!: PlayerType;
 
   dataComponent = () => {
-    if(this.playerData.username) {
+    if (this.playerData.username) {
       return html`
       <p>${this.playerData.username}</p>
       <p>${this.playerData.points}</p>
@@ -25,17 +25,22 @@ export class Person extends LitElement {
     }
   }
 
-  handleClick (e) {
-    this.dispatchEvent(new CustomEvent('match-requested', {detail: {
-      name: this.playerData.username
-    } }));
+  handleClick() {
+    console.log("handleClick");
+    this.dispatchEvent(new CustomEvent('match-requested', {
+      detail: {
+        name: this.playerData.username
+      }
+    }));
   }
-  
+
 
   render() {
     return html`
-      <div @click="${this.handleClick}">
+      <div>
+        <button @click=${this.handleClick}>
         ${this.dataComponent()}
+        </button>
       </div>
     `;
   }
