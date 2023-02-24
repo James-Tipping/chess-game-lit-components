@@ -85,6 +85,8 @@ export class Leaderboard extends LitElement {
   }
 
   handleMatchRequest(e: CustomEvent) {
+    console.log("Second handleclick fctn");
+    console.log(e);
     this.matchData = this.data.games.filter((game) => e.detail.name === game.white.username || game.black.username)[0];
   }
 

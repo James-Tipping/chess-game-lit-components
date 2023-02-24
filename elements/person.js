@@ -28,7 +28,8 @@ let Person = class Person extends LitElement {
         this.dispatchEvent(new CustomEvent('match-requested', {
             detail: {
                 name: this.playerData.username
-            }
+            },
+            bubbles: true
         }));
     }
     render() {
