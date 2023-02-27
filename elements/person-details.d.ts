@@ -11,4 +11,4 @@ export declare class Person extends LitElement {
     handleClick(): void;
     render(): import("lit-html").TemplateResult<1>;
 }
-//# sourceMappingURL=person.d.ts.map
+//# sourceMappingURL=person-details.d.ts.map

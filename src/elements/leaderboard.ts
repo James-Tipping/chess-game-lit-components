@@ -1,50 +1,52 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { BackButtonSvg, WhiteKingSvg, BlackKingSvg } from './svgs';
+import { LitElement, html, css } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { BackButtonSvg, WhiteKingSvg, BlackKingSvg } from "./svgs";
 
 export interface PlayerType {
-  username: string,
-  points: number,
-  is_winner: boolean
-};
+  username: string;
+  points: number;
+  is_winner: boolean;
+}
 
 export interface MatchType {
   white: {
-    username: string,
-    rating: number,
-    result: string
-  },
+    username: string;
+    rating: number;
+    result: string;
+  };
   black: {
-    username: string,
-    rating: number,
-    result: string
-  }
+    username: string;
+    rating: number;
+    result: string;
+  };
 }
 
 export interface DataType {
-  games: [{
-    white: {
-      username: string,
-      rating: number,
-      result: string
-    },
-    black: {
-      username: string,
-      rating: number,
-      result: string
+  games: [
+    {
+      white: {
+        username: string;
+        rating: number;
+        result: string;
+      };
+      black: {
+        username: string;
+        rating: number;
+        result: string;
+      };
     }
-  }],
-  players: [{
-    username: string,
-    points: number,
-    is_winner: boolean
-  }]
-};
+  ];
+  players: [
+    {
+      username: string;
+      points: number;
+      is_winner: boolean;
+    }
+  ];
+}
 
-
-@customElement('leader-dashboard')
+@customElement("leader-dashboard")
 export class Leaderboard extends LitElement {
-
   @property({ type: Object })
   data!: DataType;
 
@@ -54,77 +56,154 @@ export class Leaderboard extends LitElement {
   @state()
   private matchData: MatchType | undefined;
 
+  @property()
+  name: string;
+
+  static styles = css`
+    .leaderboard {
+      width: 50%;
+      margin: auto;
+    }
+    .title {
+      font-size: 3rem;
+    }
+    button {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      text-align: start;
+    }
+    button svg {
+      height: 2rem;
+      width: auto;
+    }
+    button svg:hover {
+      fill: gray;
+    }
+    .header {
+      margin-bottom: 2rem;
+    }
+    .header * {
+      display: inline;
+    }
+    input {
+      font-family: "Poppins", sans-serif;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 1rem;
+      background-color: var(--pink-custom);
+      border-radius: 1rem;
+    }
+    .chess-piece-svg {
+      margin: auto;
+    }
+    svg {
+      height: 5rem;
+      width: auto;
+    }
+  `;
+
   constructor() {
     super();
     this.players = [] as PlayerType[];
     this.fetchData();
     this.matchData = undefined;
+    this.name = "";
   }
 
   async fetchData() {
-    const response = await fetch('https://api.chess.com/pub/tournament/late-titled-tuesday-blitz-january-31-2023-3732262/11/1');
+    const response = await fetch(
+      "https://api.chess.com/pub/tournament/late-titled-tuesday-blitz-january-31-2023-3732262/11/1"
+    );
     console.log(`response = ${response}`);
     if (!response.ok) {
-      throw new Error('Network error from API');
+      throw new Error("Network error from API");
     }
     this.data = await response.json();
-    console.log(`this.data = ${this.data}`);
     this.sortData();
-    console.log(`this.players = ${this.players}`);
   }
 
   sortData() {
+    this.data.players.sort((a, b) => {
+      if (a.is_winner === true && b.is_winner === false) return -1;
+      if (b.is_winner === true && a.is_winner === false) return 1;
+      if (a.points > b.points) return -1;
+      if (a.points < b.points) return 1;
+      else return 0;
+    });
     this.players = this.data.players;
-    this.players.sort((a, b) => {
-      if (a.is_winner === true && b.is_winner === false) return -1
-      if (b.is_winner === true && a.is_winner === false) return 1
-      if (a.points > b.points) return -1
-      if (a.points < b.points) return 1
-      else return 0
-    })
   }
 
   handleMatchRequest(e: CustomEvent) {
-    console.log("Second handleclick fctn");
-    console.log(e);
-    this.matchData = this.data.games.filter((game) => e.detail.name === game.white.username || game.black.username)[0];
+    // console.log("Second handleclick fctn");
+    // console.log(e);
+    this.matchData = this.data.games.filter(
+      (game) => e.detail.name === game.white.username || game.black.username
+    )[0];
   }
 
   handleBackButtonClick() {
+    console.log("back button clicked");
     this.matchData = undefined;
+    // this.requestUpdate();
+  }
+
+  handleInputChange(e: InputEvent) {
+    this.name = (e.target as HTMLInputElement).value;
+    this.players = this.data.players.filter((player) =>
+      player.username.includes(this.name)
+    );
   }
 
   getTournamentHtml() {
     return html`
-      <div @match-requested=${this.handleMatchRequest}>
+      <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
-        ${this.players.map(player => {
-      return html`
-            <person-details .playerData="${player}"></person-details>
+        <input
+          .value=${this.name}
+          @input=${this.handleInputChange}
+          placeholder="Search for a username"
+        />
+        ${this.players.map((player) => {
+          return html`
+            <person-details
+              class="player-container"
+              .playerData=${player}
+            ></person-details>
           `;
-    })}
+        })}
       </div>
-    `
+    `;
   }
 
   getGameHtml() {
     return html`
-      <div>
-        <button @button=${this.handleBackButtonClick}>
-          ${BackButtonSvg}
-        </button>
-        <div>
-          ${WhiteKingSvg}
-          <p>${this.matchData?.white.username}</p>
-          <p>${this.matchData?.white.result}</p>
-          <p>${this.matchData?.white.rating}</p>
+      <div class="header">
+        <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
+        <h3 class="title">Match Details</h3>
+      </div>
+          <div class="grid-container">
+            <div class="chess-piece-svg">${WhiteKingSvg}</div>
+            <div class="user-data">
+              <p>${this.matchData?.white.username}</p>
+              <p>${this.matchData?.white.result}</p>
+              <p>Rating: ${this.matchData?.white.rating}</p>
+            </div>
+            <div class="user-data">
+              <p>${this.matchData?.black.username}</p>
+              <p>${this.matchData?.black.result}</p>
+              <p>Rating: ${this.matchData?.black.rating}</p>
+            </div>
+            <div class="chess-piece-svg">${BlackKingSvg}</div>
+          </div>
         </div>
       </div>
-    `
+    `;
   }
 
-
   render() {
-    return this.matchData ? this.getGameHtml() : this.getTournamentHtml()
+    return this.matchData ? this.getGameHtml() : this.getTournamentHtml();
   }
 }

@@ -1,2 +1,2 @@
 import "./elements/leaderboard";
-import './elements/person';
+import './elements/person-details';

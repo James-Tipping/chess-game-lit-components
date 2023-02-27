@@ -1,1 +1,1 @@
-{"version":3,"file":"main.js","sourceRoot":"","sources":["src/main.ts"],"names":[],"mappings":"AAAA,OAAO,wBAAwB,CAAC;AAChC,OAAO,mBAAmB,CAAC","sourcesContent":["import \"./elements/leaderboard\";\nimport './elements/person';"]}
+{"version":3,"file":"main.js","sourceRoot":"","sources":["src/main.ts"],"names":[],"mappings":"AAAA,OAAO,wBAAwB,CAAC;AAChC,OAAO,2BAA2B,CAAC","sourcesContent":["import \"./elements/leaderboard\";\nimport './elements/person-details';"]}

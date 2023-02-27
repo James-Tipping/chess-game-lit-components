@@ -1,4 +1,4 @@
-import { LitElement } from 'lit';
+import { LitElement } from "lit";
 export interface PlayerType {
     username: string;
     points: number;
@@ -43,11 +43,14 @@ export declare class Leaderboard extends LitElement {
     data: DataType;
     players: PlayerType[];
     private matchData;
+    name: string;
+    static styles: import("lit").CSSResult;
     constructor();
     fetchData(): Promise<void>;
     sortData(): void;
     handleMatchRequest(e: CustomEvent): void;
     handleBackButtonClick(): void;
+    handleInputChange(e: InputEvent): void;
     getTournamentHtml(): import("lit-html").TemplateResult<1>;
     getGameHtml(): import("lit-html").TemplateResult<1>;
     render(): import("lit-html").TemplateResult<1>;

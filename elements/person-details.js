@@ -13,9 +13,11 @@ let Person = class Person extends LitElement {
         this.dataComponent = () => {
             if (this.playerData.username) {
                 return html `
-      ${this.playerData.is_winner === true ? html `<img src="./winner.png">` : nothing}
-      <p>${this.playerData.username}</p>
-      <p>${this.playerData.points}</p>
+        ${this.playerData.is_winner === true ? html `<img src="./winner.png">` : nothing}
+        <div class="user-data">
+          <p>${this.playerData.username}</p>
+          <p>Score: <b>${this.playerData.points}</b></p>
+        </div>
       `;
             }
             else {
@@ -49,6 +51,16 @@ Person.styles = css `
       border-width: 0.1rem;
       border-style: solid;
       margin: 2rem 0;
+      padding: 0 1rem;
+    }
+    .person:hover {
+      background-color: var(--hover-purple-custom);
+      cursor: pointer;
+    }
+    .user-data {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
   `;
 __decorate([
@@ -58,4 +70,4 @@ Person = __decorate([
     customElement('person-details')
 ], Person);
 export { Person };
-//# sourceMappingURL=person.js.map
+//# sourceMappingURL=person-details.js.map
