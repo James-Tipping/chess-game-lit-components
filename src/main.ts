@@ -3,7 +3,7 @@
 // - Try to keep state of scroll position
 // - Improve match page aesthetics
 // - Perhaps select by score
-// - Implement router
+// - Implement router - perhaps need to clone github repository and paste components in
 // - Separate component for match data
 
 

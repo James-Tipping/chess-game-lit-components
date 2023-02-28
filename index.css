@@ -4,7 +4,7 @@
     --light-purple-custom: #adb9e3;
     --hover-purple-custom: #ba99d6;
     --dark-purple-custom: #a379c9;
-    --pink-custom: #b744b8;
+    --pink-custom: rgb(183, 68, 184);
 }
 
 .body {
