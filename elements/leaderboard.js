@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { BackButtonSvg, WhiteKingSvg, BlackKingSvg } from "./svgs";
+import { styleMap } from 'lit/directives/style-map.js';
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
@@ -62,19 +63,23 @@ let Leaderboard = class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
-        ${this.players.map((player) => {
+        <div class="scrollable-leaderboard-div">
+          ${this.players.map((player) => {
             return html `
-            <person-details
-              class="player-container"
-              .playerData=${player}
-            ></person-details>
-          `;
+              <person-details
+                class="player-container"
+                .playerData=${player}
+              ></person-details>
+            `;
         })}
+        </div>
       </div>
     `;
     }
     getGameHtml() {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        const whiteStyles = { color: ((_a = this.matchData) === null || _a === void 0 ? void 0 : _a.white.result) === 'win' ? 'blue' : 'red' };
+        const blackStyles = { color: ((_b = this.matchData) === null || _b === void 0 ? void 0 : _b.black.result) === 'win' ? 'blue' : 'red' };
         return html `
       <div class="header">
         <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
@@ -82,15 +87,15 @@ let Leaderboard = class Leaderboard extends LitElement {
       </div>
           <div class="grid-container">
             <div class="chess-piece-svg">${WhiteKingSvg}</div>
-            <div class="user-data">
-              <p>${(_a = this.matchData) === null || _a === void 0 ? void 0 : _a.white.username}</p>
-              <p>${(_b = this.matchData) === null || _b === void 0 ? void 0 : _b.white.result}</p>
-              <p>Rating: ${(_c = this.matchData) === null || _c === void 0 ? void 0 : _c.white.rating}</p>
+            <div class="user-data" style=${styleMap(whiteStyles)}>
+              <p><b>${(_c = this.matchData) === null || _c === void 0 ? void 0 : _c.white.username}</b></p>
+              <p>${(_d = this.matchData) === null || _d === void 0 ? void 0 : _d.white.result.toUpperCase()}</p>
+              <p>Rating: ${(_e = this.matchData) === null || _e === void 0 ? void 0 : _e.white.rating}</p>
             </div>
-            <div class="user-data">
-              <p>${(_d = this.matchData) === null || _d === void 0 ? void 0 : _d.black.username}</p>
-              <p>${(_e = this.matchData) === null || _e === void 0 ? void 0 : _e.black.result}</p>
-              <p>Rating: ${(_f = this.matchData) === null || _f === void 0 ? void 0 : _f.black.rating}</p>
+            <div class="user-data" style=${styleMap(blackStyles)}>
+              <p><b>${(_f = this.matchData) === null || _f === void 0 ? void 0 : _f.black.username}</b></p>
+              <p>${(_g = this.matchData) === null || _g === void 0 ? void 0 : _g.black.result.toUpperCase()}</p>
+              <p>Rating: ${(_h = this.matchData) === null || _h === void 0 ? void 0 : _h.black.rating}</p>
             </div>
             <div class="chess-piece-svg">${BlackKingSvg}</div>
           </div>
@@ -131,12 +136,26 @@ Leaderboard.styles = css `
     }
     input {
       font-family: "Poppins", sans-serif;
+      width: 80%;
+      border-radius: 0.5rem;
+      color: var(--pink-custom);
+    }
+    input:focus {
+      border-color: var(--pink-custom);
+      border-style: solid;
+      outline: none;
+    }
+    .scrollable-leaderboard-div {
+      margin-top: 3rem;
+      overflow-y: auto;
+      max-height: 70vh;
     }
     .grid-container {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-gap: 1rem;
-      background-color: var(--pink-custom);
+      border: 0.2rem solid rgb(183, 68, 184);
+      background-color: white;
       border-radius: 1rem;
     }
     .chess-piece-svg {
@@ -145,6 +164,15 @@ Leaderboard.styles = css `
     svg {
       height: 5rem;
       width: auto;
+    }
+    .username {
+
+    }
+    .win {
+      color: red
+    }
+    .lose {
+      color: blue;
     }
   `;
 __decorate([

@@ -12,14 +12,14 @@ export class Person extends LitElement {
 
   static styles = css`
     .person {
-      width: 100%;
       background-color: var(--dark-purple-custom);
       border-radius: 1rem;
       border-color: var(--pink-custom);
       border-width: 0.1rem;
       border-style: solid;
-      margin: 2rem 0;
+      margin: 0 0 2rem 0;
       padding: 0 1rem;
+      color: white;
     }
     .person:hover {
       background-color: var(--hover-purple-custom);

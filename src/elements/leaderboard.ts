@@ -1,6 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { BackButtonSvg, WhiteKingSvg, BlackKingSvg } from "./svgs";
+import {styleMap} from 'lit/directives/style-map.js';
+// import { router } from "../main";
 
 export interface PlayerType {
   username: string;
@@ -47,6 +49,9 @@ export interface DataType {
 
 @customElement("leader-dashboard")
 export class Leaderboard extends LitElement {
+  // @property({ type: Object })
+  // location = router.location;
+
   @property({ type: Object })
   data!: DataType;
 
@@ -88,12 +93,26 @@ export class Leaderboard extends LitElement {
     }
     input {
       font-family: "Poppins", sans-serif;
+      width: 80%;
+      border-radius: 0.5rem;
+      color: var(--pink-custom);
+    }
+    input:focus {
+      border-color: var(--pink-custom);
+      border-style: solid;
+      outline: none;
+    }
+    .scrollable-leaderboard-div {
+      margin-top: 3rem;
+      overflow-y: auto;
+      max-height: 70vh;
     }
     .grid-container {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-gap: 1rem;
-      background-color: var(--pink-custom);
+      border: 0.2rem solid rgb(183, 68, 184);
+      background-color: white;
       border-radius: 1rem;
     }
     .chess-piece-svg {
@@ -102,6 +121,15 @@ export class Leaderboard extends LitElement {
     svg {
       height: 5rem;
       width: auto;
+    }
+    .username {
+
+    }
+    .win {
+      color: red
+    }
+    .lose {
+      color: blue;
     }
   `;
 
@@ -166,19 +194,23 @@ export class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
-        ${this.players.map((player) => {
-          return html`
-            <person-details
-              class="player-container"
-              .playerData=${player}
-            ></person-details>
-          `;
-        })}
+        <div class="scrollable-leaderboard-div">
+          ${this.players.map((player) => {
+            return html`
+              <person-details
+                class="player-container"
+                .playerData=${player}
+              ></person-details>
+            `;
+          })}
+        </div>
       </div>
     `;
   }
 
   getGameHtml() {
+    const whiteStyles = { color: this.matchData?.white.result === 'win' ? 'blue' : 'red'}
+    const blackStyles = { color: this.matchData?.black.result === 'win' ? 'blue' : 'red'}
     return html`
       <div class="header">
         <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
@@ -186,14 +218,14 @@ export class Leaderboard extends LitElement {
       </div>
           <div class="grid-container">
             <div class="chess-piece-svg">${WhiteKingSvg}</div>
-            <div class="user-data">
-              <p>${this.matchData?.white.username}</p>
-              <p>${this.matchData?.white.result}</p>
+            <div class="user-data" style=${styleMap(whiteStyles)}>
+              <p><b>${this.matchData?.white.username}</b></p>
+              <p>${this.matchData?.white.result.toUpperCase()}</p>
               <p>Rating: ${this.matchData?.white.rating}</p>
             </div>
-            <div class="user-data">
-              <p>${this.matchData?.black.username}</p>
-              <p>${this.matchData?.black.result}</p>
+            <div class="user-data" style=${styleMap(blackStyles)}>
+              <p><b>${this.matchData?.black.username}</b></p>
+              <p>${this.matchData?.black.result.toUpperCase()}</p>
               <p>Rating: ${this.matchData?.black.rating}</p>
             </div>
             <div class="chess-piece-svg">${BlackKingSvg}</div>
