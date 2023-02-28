@@ -38,7 +38,7 @@ export class Person extends LitElement {
   dataComponent = () => {
     if (this.playerData.username) {
       return html`
-        ${this.playerData.is_winner === true ? html`<img src="./winner.png">` : nothing}
+        ${this.playerData.is_winner === true ? html`<img src="/winner.png">` : nothing}
         <div class="user-data">
           <p>${this.playerData.username}</p>
           <p>Score: <b>${this.playerData.points}</b></p>
@@ -57,7 +57,9 @@ export class Person extends LitElement {
         name: this.playerData.username
       },
       bubbles: true
+      
     }));
+    console.log(this.playerData);
   }
 
 

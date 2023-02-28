@@ -106,6 +106,12 @@ export class Leaderboard extends LitElement {
       margin-top: 3rem;
       overflow-y: auto;
       max-height: 70vh;
+      /* display: none; */
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollable-leaderboard-div::-webkit-scrollbar {
+      display: none;
     }
     .grid-container {
       display: grid;
@@ -167,9 +173,15 @@ export class Leaderboard extends LitElement {
   handleMatchRequest(e: CustomEvent) {
     // console.log("Second handleclick fctn");
     // console.log(e);
+    const name = e.detail.name as string;
     this.matchData = this.data.games.filter(
-      (game) => e.detail.name === game.white.username || game.black.username
+      (game) => name.toLowerCase() === game.white.username.toLowerCase() || name.toLowerCase() === game.black.username.toLowerCase()
     )[0];
+    // console.log(this.data.games.filter(
+    //   (game) => e.detail.name === game.white.username || game.black.username
+    // ).length)
+    // console.log(e.detail.name);
+    // console.log(this.matchData);
   }
 
   handleBackButtonClick() {
