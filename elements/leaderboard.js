@@ -177,9 +177,6 @@ Leaderboard.styles = css `
       height: 5rem;
       width: auto;
     }
-    .username {
-
-    }
     .win {
       color: red
     }

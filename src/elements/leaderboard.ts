@@ -128,9 +128,6 @@ export class Leaderboard extends LitElement {
       height: 5rem;
       width: auto;
     }
-    .username {
-
-    }
     .win {
       color: red
     }
@@ -138,6 +135,7 @@ export class Leaderboard extends LitElement {
       color: blue;
     }
   `;
+
 
   constructor() {
     super();
