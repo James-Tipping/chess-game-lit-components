@@ -4,21 +4,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html, LitElement } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { router } from "../main";
 import { styleMap } from "lit/directives/style-map.js";
 import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
+import { DataStore } from "./DataStore";
 let MatchView = class MatchView extends LitElement {
     constructor() {
-        super(...arguments);
+        super();
         this.location = router.location;
+        this.dataStoreInstance = DataStore.getInstance();
+        this.dataStoreInstance.getData();
+    }
+    async connectedCallback() {
+        super.connectedCallback();
+        this.location = router.location;
+        console.log(this.location.getUrl());
+        this.matchData = await this.dataStoreInstance.getMatchFromId(this.location.params.id.toString());
     }
     handleBackButtonClick() {
         router.render(router.urlForPath('/'));
     }
     render() {
         var _a, _b, _c, _d, _e, _f, _g, _h;
+        console.log(this.location);
         const whiteStyles = { color: ((_a = this.matchData) === null || _a === void 0 ? void 0 : _a.white.result) === 'win' ? 'blue' : 'red' };
         const blackStyles = { color: ((_b = this.matchData) === null || _b === void 0 ? void 0 : _b.black.result) === 'win' ? 'blue' : 'red' };
         return html `
@@ -45,9 +55,51 @@ let MatchView = class MatchView extends LitElement {
       `;
     }
 };
+MatchView.styles = css `
+    .header {
+      margin-bottom: 2rem;
+    }
+    .header * {
+      display: inline;
+    }
+    .title {
+      font-size: 3rem;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 1rem;
+      border: 0.2rem solid rgb(183, 68, 184);
+      background-color: white;
+      border-radius: 1rem;
+    }
+    .chess-piece-svg {
+      margin: auto;
+    }
+    svg {
+      height: 5rem;
+      width: auto;
+    }
+    button {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      text-align: start;
+    }
+    button svg {
+      height: 2rem;
+      width: auto;
+    }
+    button svg:hover {
+      fill: gray;
+    }
+  `;
 __decorate([
-    property()
+    state()
 ], MatchView.prototype, "matchData", void 0);
+__decorate([
+    state()
+], MatchView.prototype, "dataStoreInstance", void 0);
 __decorate([
     property({ type: Object })
 ], MatchView.prototype, "location", void 0);

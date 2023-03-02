@@ -1,36 +1,41 @@
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html, LitElement } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { router } from "../main";
 import { styleMap } from "lit/directives/style-map.js";
 import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
-
-export interface MatchType {
-  white: {
-    username: string;
-    rating: number;
-    result: string;
-  };
-  black: {
-    username: string;
-    rating: number;
-    result: string;
-  };
-}
+import { DataStore, MatchType } from "./DataStore";
 
 @customElement('match-view')
 export class MatchView extends LitElement {
 
-  @property()
-  matchData: MatchType | undefined;
+  @state()
+  private matchData: MatchType | undefined;
+
+  @state()
+  private dataStoreInstance: DataStore;
 
   @property({ type: Object })
   location = router.location;
+
+  constructor() {
+    super();
+    this.dataStoreInstance = DataStore.getInstance();
+    this.dataStoreInstance.getData();
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    this.location = router.location;
+    console.log(this.location.getUrl());
+    this.matchData = await this.dataStoreInstance.getMatchFromId(this.location.params.id.toString());
+  }
 
   handleBackButtonClick() {
     router.render(router.urlForPath('/'));
   }
 
   render() {
+    console.log(this.location);
     const whiteStyles = { color: this.matchData?.white.result === 'win' ? 'blue' : 'red'}
     const blackStyles = { color: this.matchData?.black.result === 'win' ? 'blue' : 'red'}
     return html`
@@ -57,5 +62,45 @@ export class MatchView extends LitElement {
       `;
 
   }
+
+  static styles = css`
+    .header {
+      margin-bottom: 2rem;
+    }
+    .header * {
+      display: inline;
+    }
+    .title {
+      font-size: 3rem;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 1rem;
+      border: 0.2rem solid rgb(183, 68, 184);
+      background-color: white;
+      border-radius: 1rem;
+    }
+    .chess-piece-svg {
+      margin: auto;
+    }
+    svg {
+      height: 5rem;
+      width: auto;
+    }
+    button {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      text-align: start;
+    }
+    button svg {
+      height: 2rem;
+      width: auto;
+    }
+    button svg:hover {
+      fill: gray;
+    }
+  `;
 
 }

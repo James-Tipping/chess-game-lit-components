@@ -1,11 +1,7 @@
 import { LitElement, html, css, nothing } from "lit";
 import { property, customElement } from "lit/decorators.js";
+import { DataStore, PlayerType } from "./DataStore";
 
-export interface PlayerType {
-  username: string,
-  points: number,
-  is_winner: boolean
-};
 
 @customElement('person-details')
 export class Person extends LitElement {
@@ -59,7 +55,6 @@ export class Person extends LitElement {
       bubbles: true
       
     }));
-    console.log(this.playerData);
   }
 
 

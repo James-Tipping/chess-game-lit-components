@@ -26,7 +26,7 @@ const router = new Router(document.getElementById('body'));
 
 router.setRoutes([
     {path: '/', component: 'leader-dashboard', action: async () => {await import('./elements/leaderboard');}},
-    {path: '/match/', component: 'match-view', action: async () => {await import('./elements/match');}}
+    {path: '/match/:id', component: 'match-view', action: async () => {await import('./elements/match');}}
 ]);
 
 export { router };

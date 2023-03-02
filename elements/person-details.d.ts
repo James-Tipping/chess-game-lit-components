@@ -1,9 +1,5 @@
 import { LitElement, nothing } from "lit";
-export interface PlayerType {
-    username: string;
-    points: number;
-    is_winner: boolean;
-}
+import { PlayerType } from "./DataStore";
 export declare class Person extends LitElement {
     static styles: import("lit").CSSResult;
     playerData: PlayerType;

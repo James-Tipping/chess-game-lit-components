@@ -6,61 +6,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { BackButtonSvg, WhiteKingSvg, BlackKingSvg } from "./svgs";
-import { styleMap } from 'lit/directives/style-map.js';
+import { DataStore } from "./DataStore";
+import { router } from "../main";
+import { Router } from '@vaadin/router';
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
-        this.players = [];
-        this.fetchData();
-        this.matchData = undefined;
+        this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
     }
-    async fetchData() {
-        const response = await fetch("https://api.chess.com/pub/tournament/late-titled-tuesday-blitz-january-31-2023-3732262/11/1");
-        console.log(`response = ${response}`);
-        if (!response.ok) {
-            throw new Error("Network error from API");
-        }
-        this.data = await response.json();
-        this.sortData();
+    async connectedCallback() {
+        super.connectedCallback();
+        await this.dataStoreInstance.getData();
+        this.players = await this.dataStoreInstance.getPlayersDetails();
     }
-    sortData() {
-        this.data.players.sort((a, b) => {
-            if (a.is_winner === true && b.is_winner === false)
-                return -1;
-            if (b.is_winner === true && a.is_winner === false)
-                return 1;
-            if (a.points > b.points)
-                return -1;
-            if (a.points < b.points)
-                return 1;
-            else
-                return 0;
-        });
-        this.players = this.data.players;
-    }
-    handleMatchRequest(e) {
-        // console.log("Second handleclick fctn");
-        // console.log(e);
+    async handleMatchRequest(e) {
         const name = e.detail.name;
-        this.matchData = this.data.games.filter((game) => name.toLowerCase() === game.white.username.toLowerCase() || name.toLowerCase() === game.black.username.toLowerCase())[0];
-        // console.log(this.data.games.filter(
-        //   (game) => e.detail.name === game.white.username || game.black.username
-        // ).length)
-        // console.log(e.detail.name);
-        // console.log(this.matchData);
+        const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
+        Router.go(router.urlForPath(`/match${matchId}`));
     }
-    handleBackButtonClick() {
-        console.log("back button clicked");
-        this.matchData = undefined;
-        // this.requestUpdate();
-    }
-    handleInputChange(e) {
+    async handleInputChange(e) {
         this.name = e.target.value;
-        this.players = this.data.players.filter((player) => player.username.includes(this.name));
+        this.players = await this.dataStoreInstance.getPlayersDetails(this.name);
     }
-    getTournamentHtml() {
+    render() {
+        var _a;
         return html `
       <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
@@ -70,7 +40,7 @@ let Leaderboard = class Leaderboard extends LitElement {
           placeholder="Search for a username"
         />
         <div class="scrollable-leaderboard-div">
-          ${this.players.map((player) => {
+          ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
             return html `
               <person-details
                 class="player-container"
@@ -82,36 +52,6 @@ let Leaderboard = class Leaderboard extends LitElement {
       </div>
     `;
     }
-    getGameHtml() {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        const whiteStyles = { color: ((_a = this.matchData) === null || _a === void 0 ? void 0 : _a.white.result) === 'win' ? 'blue' : 'red' };
-        const blackStyles = { color: ((_b = this.matchData) === null || _b === void 0 ? void 0 : _b.black.result) === 'win' ? 'blue' : 'red' };
-        return html `
-      <div class="header">
-        <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
-        <h3 class="title">Match Details</h3>
-      </div>
-          <div class="grid-container">
-            <div class="chess-piece-svg">${WhiteKingSvg}</div>
-            <div class="user-data" style=${styleMap(whiteStyles)}>
-              <p><b>${(_c = this.matchData) === null || _c === void 0 ? void 0 : _c.white.username}</b></p>
-              <p>${(_d = this.matchData) === null || _d === void 0 ? void 0 : _d.white.result.toUpperCase()}</p>
-              <p>Rating: ${(_e = this.matchData) === null || _e === void 0 ? void 0 : _e.white.rating}</p>
-            </div>
-            <div class="user-data" style=${styleMap(blackStyles)}>
-              <p><b>${(_f = this.matchData) === null || _f === void 0 ? void 0 : _f.black.username}</b></p>
-              <p>${(_g = this.matchData) === null || _g === void 0 ? void 0 : _g.black.result.toUpperCase()}</p>
-              <p>Rating: ${(_h = this.matchData) === null || _h === void 0 ? void 0 : _h.black.rating}</p>
-            </div>
-            <div class="chess-piece-svg">${BlackKingSvg}</div>
-          </div>
-        </div>
-      </div>
-    `;
-    }
-    render() {
-        return this.matchData ? this.getGameHtml() : this.getTournamentHtml();
-    }
 };
 Leaderboard.styles = css `
     .leaderboard {
@@ -120,25 +60,6 @@ Leaderboard.styles = css `
     }
     .title {
       font-size: 3rem;
-    }
-    button {
-      background-color: transparent;
-      outline: none;
-      border: none;
-      text-align: start;
-    }
-    button svg {
-      height: 2rem;
-      width: auto;
-    }
-    button svg:hover {
-      fill: gray;
-    }
-    .header {
-      margin-bottom: 2rem;
-    }
-    .header * {
-      display: inline;
     }
     input {
       font-family: "Poppins", sans-serif;
@@ -162,26 +83,9 @@ Leaderboard.styles = css `
     .scrollable-leaderboard-div::-webkit-scrollbar {
       display: none;
     }
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-gap: 1rem;
-      border: 0.2rem solid rgb(183, 68, 184);
-      background-color: white;
-      border-radius: 1rem;
-    }
-    .chess-piece-svg {
-      margin: auto;
-    }
     svg {
       height: 5rem;
       width: auto;
-    }
-    .win {
-      color: red
-    }
-    .lose {
-      color: blue;
     }
   `;
 __decorate([
@@ -192,7 +96,7 @@ __decorate([
 ], Leaderboard.prototype, "players", void 0);
 __decorate([
     state()
-], Leaderboard.prototype, "matchData", void 0);
+], Leaderboard.prototype, "dataStoreInstance", void 0);
 __decorate([
     property()
 ], Leaderboard.prototype, "name", void 0);

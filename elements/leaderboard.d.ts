@@ -1,58 +1,15 @@
 import { LitElement } from "lit";
-export interface PlayerType {
-    username: string;
-    points: number;
-    is_winner: boolean;
-}
-export interface MatchType {
-    white: {
-        username: string;
-        rating: number;
-        result: string;
-    };
-    black: {
-        username: string;
-        rating: number;
-        result: string;
-    };
-}
-export interface DataType {
-    games: [
-        {
-            white: {
-                username: string;
-                rating: number;
-                result: string;
-            };
-            black: {
-                username: string;
-                rating: number;
-                result: string;
-            };
-        }
-    ];
-    players: [
-        {
-            username: string;
-            points: number;
-            is_winner: boolean;
-        }
-    ];
-}
+import { PlayerType, DataType } from "./DataStore";
 export declare class Leaderboard extends LitElement {
     data: DataType;
     players: PlayerType[];
-    private matchData;
+    private dataStoreInstance;
     name: string;
-    static styles: import("lit").CSSResult;
     constructor();
-    fetchData(): Promise<void>;
-    sortData(): void;
-    handleMatchRequest(e: CustomEvent): void;
-    handleBackButtonClick(): void;
-    handleInputChange(e: InputEvent): void;
-    getTournamentHtml(): import("lit-html").TemplateResult<1>;
-    getGameHtml(): import("lit-html").TemplateResult<1>;
+    connectedCallback(): Promise<void>;
+    handleMatchRequest(e: CustomEvent): Promise<void>;
+    handleInputChange(e: InputEvent): Promise<void>;
     render(): import("lit-html").TemplateResult<1>;
+    static styles: import("lit").CSSResult;
 }
 //# sourceMappingURL=leaderboard.d.ts.map

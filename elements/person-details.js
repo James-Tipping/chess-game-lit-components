@@ -6,7 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { LitElement, html, css, nothing } from "lit";
 import { property, customElement } from "lit/decorators.js";
-;
 let Person = class Person extends LitElement {
     constructor() {
         super(...arguments);
@@ -33,7 +32,6 @@ let Person = class Person extends LitElement {
             },
             bubbles: true
         }));
-        console.log(this.playerData);
     }
     render() {
         return html `
