@@ -5,9 +5,15 @@ export declare class Leaderboard extends LitElement {
     players: PlayerType[];
     private dataStoreInstance;
     name: string;
+    errorMessage: {
+        showErrorMessage: boolean;
+        message: string;
+    };
     constructor();
     connectedCallback(): Promise<void>;
     handleMatchRequest(e: CustomEvent): Promise<void>;
+    handleNoMatchError(error: Error): void;
+    removeMatchError(): void;
     handleInputChange(e: InputEvent): Promise<void>;
     render(): import("lit-html").TemplateResult<1>;
     static styles: import("lit").CSSResult;

@@ -39,6 +39,9 @@ export class DataStore {
     }
     async getMatchIdFromUsername(username) {
         const match = await this.getMatchFromUsername(username);
+        if (match === undefined) {
+            throw new Error(`No match found for user "${username}". Please choose a different player and try again.`);
+        }
         const matchId = match.url.substring(31);
         return matchId;
     }
@@ -53,11 +56,8 @@ export class DataStore {
         if (!this.data) {
             await this.getData();
         }
-        console.log(this.data.games.length);
-        console.log(username.toLowerCase());
         const match = this.data.games.filter((game) => game.white.username.toLowerCase() === username.toLowerCase() ||
             game.black.username.toLowerCase() === username.toLowerCase())[0]; // why is there an error (I think undefined) when curly brackets surround the filter condition?
-        console.log(match);
         return match;
     }
     async getPlayersDetails(usernameSearchString) {
@@ -65,7 +65,7 @@ export class DataStore {
             await this.getData();
         }
         if (usernameSearchString) {
-            const playersData = this.data.players.filter(player => player.username.toLowerCase() === usernameSearchString.toLowerCase());
+            const playersData = this.data.players.filter(player => player.username.includes(usernameSearchString));
             return playersData;
         }
         else {

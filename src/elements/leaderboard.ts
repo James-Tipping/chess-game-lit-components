@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DataStore, MatchType, PlayerType, DataType } from "./DataStore";
 import { router } from "../main";
@@ -19,6 +19,12 @@ export class Leaderboard extends LitElement {
   @property()
   name: string;
 
+  @state()
+  errorMessage = {
+    showErrorMessage: false,
+    message: ''
+  };
+
   constructor() {
     super();
     this.dataStoreInstance = DataStore.getInstance();
@@ -33,8 +39,28 @@ export class Leaderboard extends LitElement {
 
   async handleMatchRequest(e: CustomEvent) {
     const name = e.detail.name as string;
-    const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
-    Router.go(router.urlForPath(`/match${matchId}`));
+    try {
+      const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
+      Router.go(router.urlForPath(`/match${matchId}`));
+    } catch (error) {
+      console.log('error handled');
+      this.handleNoMatchError(error as Error);
+    }
+  }
+
+  handleNoMatchError(error: Error) {
+    this.errorMessage = {
+      showErrorMessage: true,
+      message: error.message
+    }
+    const timeout = setTimeout(this.removeMatchError, 3000);
+  }
+
+  removeMatchError() {
+    this.errorMessage = {
+      showErrorMessage: false,
+      message: ''
+    };
   }
 
   async handleInputChange(e: InputEvent) {
@@ -51,6 +77,7 @@ export class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
+        ${this.errorMessage.showErrorMessage ? html`<error-view .message=${this.errorMessage.message}></error-view>` : nothing}
         <div class="scrollable-leaderboard-div">
           ${this.players?.map((player) => {
             return html`

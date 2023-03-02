@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DataStore } from "./DataStore";
 import { router } from "../main";
@@ -12,6 +12,10 @@ import { Router } from '@vaadin/router';
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
+        this.errorMessage = {
+            showErrorMessage: false,
+            message: ''
+        };
         this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
     }
@@ -22,8 +26,27 @@ let Leaderboard = class Leaderboard extends LitElement {
     }
     async handleMatchRequest(e) {
         const name = e.detail.name;
-        const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
-        Router.go(router.urlForPath(`/match${matchId}`));
+        try {
+            const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
+            Router.go(router.urlForPath(`/match${matchId}`));
+        }
+        catch (error) {
+            console.log('error handled');
+            this.handleNoMatchError(error);
+        }
+    }
+    handleNoMatchError(error) {
+        this.errorMessage = {
+            showErrorMessage: true,
+            message: error.message
+        };
+        const timeout = setTimeout(this.removeMatchError, 3000);
+    }
+    removeMatchError() {
+        this.errorMessage = {
+            showErrorMessage: false,
+            message: ''
+        };
     }
     async handleInputChange(e) {
         this.name = e.target.value;
@@ -39,6 +62,7 @@ let Leaderboard = class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
+        ${this.errorMessage.showErrorMessage ? html `<error-view .message=${this.errorMessage.message}></error-view>` : nothing}
         <div class="scrollable-leaderboard-div">
           ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
             return html `
@@ -100,6 +124,9 @@ __decorate([
 __decorate([
     property()
 ], Leaderboard.prototype, "name", void 0);
+__decorate([
+    state()
+], Leaderboard.prototype, "errorMessage", void 0);
 Leaderboard = __decorate([
     customElement("leader-dashboard")
 ], Leaderboard);

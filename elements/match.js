@@ -10,6 +10,7 @@ import { router } from "../main";
 import { styleMap } from "lit/directives/style-map.js";
 import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
 import { DataStore } from "./DataStore";
+import { Router } from "@vaadin/router";
 let MatchView = class MatchView extends LitElement {
     constructor() {
         super();
@@ -20,15 +21,13 @@ let MatchView = class MatchView extends LitElement {
     async connectedCallback() {
         super.connectedCallback();
         this.location = router.location;
-        console.log(this.location.getUrl());
         this.matchData = await this.dataStoreInstance.getMatchFromId(this.location.params.id.toString());
     }
     handleBackButtonClick() {
-        router.render(router.urlForPath('/'));
+        Router.go(router.urlForPath('/'));
     }
     render() {
         var _a, _b, _c, _d, _e, _f, _g, _h;
-        console.log(this.location);
         const whiteStyles = { color: ((_a = this.matchData) === null || _a === void 0 ? void 0 : _a.white.result) === 'win' ? 'blue' : 'red' };
         const blackStyles = { color: ((_b = this.matchData) === null || _b === void 0 ? void 0 : _b.black.result) === 'win' ? 'blue' : 'red' };
         return html `
