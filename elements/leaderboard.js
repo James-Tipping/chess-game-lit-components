@@ -14,6 +14,7 @@ let Leaderboard = class Leaderboard extends LitElement {
         super();
         this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
+        this.usernameWithNoData = "";
     }
     async connectedCallback() {
         super.connectedCallback();
@@ -23,7 +24,18 @@ let Leaderboard = class Leaderboard extends LitElement {
     async handleMatchRequest(e) {
         const name = e.detail.name;
         const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
-        Router.go(router.urlForPath(`/match${matchId}`));
+        if (matchId) {
+            Router.go(router.urlForPath(`/match${matchId}`));
+        }
+        else {
+            this.handleNoPlayerData(name);
+        }
+    }
+    handleNoPlayerData(username) {
+        this.usernameWithNoData = username;
+    }
+    handleClickOffModal() {
+        this.usernameWithNoData = "";
     }
     async handleInputChange(e) {
         this.name = e.target.value;
@@ -39,6 +51,7 @@ let Leaderboard = class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
+        <no-data-modal .username=${this.usernameWithNoData} @click-off-modal=${this.handleClickOffModal} />
         <div class="scrollable-leaderboard-div">
           ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
             return html `
@@ -97,6 +110,9 @@ __decorate([
 __decorate([
     state()
 ], Leaderboard.prototype, "dataStoreInstance", void 0);
+__decorate([
+    state()
+], Leaderboard.prototype, "usernameWithNoData", void 0);
 __decorate([
     property()
 ], Leaderboard.prototype, "name", void 0);

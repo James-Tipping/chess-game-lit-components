@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, ChildPart } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DataStore, MatchType, PlayerType, DataType } from "./DataStore";
 import { router } from "../main";
@@ -16,6 +16,9 @@ export class Leaderboard extends LitElement {
   @state()
   private dataStoreInstance: DataStore;
 
+  @state()
+  usernameWithNoData: string;
+
   @property()
   name: string;
 
@@ -23,6 +26,7 @@ export class Leaderboard extends LitElement {
     super();
     this.dataStoreInstance = DataStore.getInstance();
     this.name = "";
+    this.usernameWithNoData = "";
   }
 
   async connectedCallback() {
@@ -34,7 +38,19 @@ export class Leaderboard extends LitElement {
   async handleMatchRequest(e: CustomEvent) {
     const name = e.detail.name as string;
     const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
-    Router.go(router.urlForPath(`/match${matchId}`));
+      if (matchId) {
+        Router.go(router.urlForPath(`/match${matchId}`));
+      } else {
+        this.handleNoPlayerData(name);
+      }
+  }
+
+  handleNoPlayerData(username: string) {
+    this.usernameWithNoData = username;
+  }
+
+  handleClickOffModal() {
+    this.usernameWithNoData = "";
   }
 
   async handleInputChange(e: InputEvent) {
@@ -51,6 +67,7 @@ export class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
+        <no-data-modal .username=${this.usernameWithNoData} @click-off-modal=${this.handleClickOffModal} />
         <div class="scrollable-leaderboard-div">
           ${this.players?.map((player) => {
             return html`
