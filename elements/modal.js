@@ -9,42 +9,76 @@ import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { ErrorSvg } from "./svgs";
 let Modal = class Modal extends LitElement {
-    handleClickOffModal(e) {
+    constructor() {
+        super();
         this.username = "";
-        this.dispatchEvent(new CustomEvent("click-off-modal", {
-            detail: {
-                clickOffModal: true,
-            },
-        }));
+        console.log(`username is: ${this.username}`);
+    }
+    // connectedCallback() {
+    //   super.connectedCallback();
+    //   if (this.username) {
+    //     document.addEventListener("click", () =>
+    //       this.dispatchEvent(new CustomEvent("close-modal"))
+    //     );
+    //   }
+    // }
+    // disconnectedCallback() {
+    //   super.disconnectedCallback();
+    //   document.removeEventListener("click", () =>
+    //     this.dispatchEvent(new CustomEvent("close-modal"))
+    //   );
+    // }
+    // handleClickOffModal() {
+    //   this.username = "";
+    //   this.dispatchEvent(
+    //     new CustomEvent("click-off-modal", {
+    //       detail: {
+    //         clickOffModal: true,
+    //       },
+    //     })
+    //   );
+    // }
+    closeModal() {
+        this.dispatchEvent(new CustomEvent("close-modal"));
     }
     render() {
+        console.log(this.username);
         const styles = { display: this.username.length > 1 ? "block" : "none" };
         return html `
-      <div class="modal-container" style=${styleMap(styles)}>
+      <div
+        class="modal-container"
+        style=${styleMap(styles)}
+        @click=${this.closeModal}
+      >
         <div className="modal-content">
           ${ErrorSvg}
-          <p>Sorry, there is no data for "${this.username} available"</p>
+          <p>Sorry, there is no data for user "${this.username}"" available</p>
         </div>
       </div>
     `;
     }
 };
 Modal.styles = css `
-    .modal-container {
-      display: none;
+    :host {
       position: fixed;
-      z-index: 1;
+      top: 0;
       left: 0;
-      right: 0;
       width: 100%;
       height: 100%;
-      background-color: rgb(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .modal-content {
-      margin: auto;
+      background-color: #fff;
       padding: 1rem;
-      width: 50%;
-      height: auto;
+      border-radius: 0.25rem;
+    }
+    svg {
+      height: 3rem;
+      width: auto;
     }
   `;
 __decorate([

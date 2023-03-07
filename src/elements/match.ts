@@ -4,6 +4,7 @@ import { router } from "../main";
 import { styleMap } from "lit/directives/style-map.js";
 import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
 import { DataStore, MatchType } from "./DataStore";
+import { Router } from "@vaadin/router";
 
 @customElement('match-view')
 export class MatchView extends LitElement {
@@ -26,16 +27,14 @@ export class MatchView extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     this.location = router.location;
-    console.log(this.location.getUrl());
     this.matchData = await this.dataStoreInstance.getMatchFromId(this.location.params.id.toString());
   }
 
   handleBackButtonClick() {
-    router.render(router.urlForPath('/'));
+    Router.go(router.urlForPath('/'));
   }
 
   render() {
-    console.log(this.location);
     const whiteStyles = { color: this.matchData?.white.result === 'win' ? 'blue' : 'red'}
     const blackStyles = { color: this.matchData?.black.result === 'win' ? 'blue' : 'red'}
     return html`

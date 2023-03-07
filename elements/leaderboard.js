@@ -4,17 +4,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DataStore } from "./DataStore";
 import { router } from "../main";
-import { Router } from '@vaadin/router';
+import { Router } from "@vaadin/router";
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
+        this.errorMessage = {
+            showErrorMessage: false,
+            message: "",
+        };
         this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
-        this.usernameWithNoData = "";
+        this.modalStatus = {
+            isModalOpen: false,
+            usernameNoMatchData: "",
+        };
     }
     async connectedCallback() {
         super.connectedCallback();
@@ -24,18 +31,23 @@ let Leaderboard = class Leaderboard extends LitElement {
     async handleMatchRequest(e) {
         const name = e.detail.name;
         const matchId = await this.dataStoreInstance.getMatchIdFromUsername(name);
-        if (matchId) {
+        if (matchId !== "None") {
             Router.go(router.urlForPath(`/match${matchId}`));
         }
         else {
-            this.handleNoPlayerData(name);
+            console.log("No match for this user - leaderboard.ts");
+            console.log(`name is: ${name}`);
+            this.modalStatus = {
+                isModalOpen: true,
+                usernameNoMatchData: name,
+            };
         }
     }
-    handleNoPlayerData(username) {
-        this.usernameWithNoData = username;
-    }
-    handleClickOffModal() {
-        this.usernameWithNoData = "";
+    closeModal() {
+        this.modalStatus = {
+            isModalOpen: false,
+            usernameNoMatchData: "",
+        };
     }
     async handleInputChange(e) {
         this.name = e.target.value;
@@ -44,6 +56,13 @@ let Leaderboard = class Leaderboard extends LitElement {
     render() {
         var _a;
         return html `
+      ${this.modalStatus.isModalOpen
+            ? html `
+      <no-data-modal
+        .username=${this.modalStatus.usernameNoMatchData}
+        @close-modal=${this.closeModal}
+      ></no-data-modal>`
+            : nothing}
       <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
         <input
@@ -51,7 +70,6 @@ let Leaderboard = class Leaderboard extends LitElement {
           @input=${this.handleInputChange}
           placeholder="Search for a username"
         />
-        <no-data-modal .username=${this.usernameWithNoData} @click-off-modal=${this.handleClickOffModal} />
         <div class="scrollable-leaderboard-div">
           ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
             return html `
@@ -112,10 +130,13 @@ __decorate([
 ], Leaderboard.prototype, "dataStoreInstance", void 0);
 __decorate([
     state()
-], Leaderboard.prototype, "usernameWithNoData", void 0);
+], Leaderboard.prototype, "modalStatus", void 0);
 __decorate([
     property()
 ], Leaderboard.prototype, "name", void 0);
+__decorate([
+    state()
+], Leaderboard.prototype, "errorMessage", void 0);
 Leaderboard = __decorate([
     customElement("leader-dashboard")
 ], Leaderboard);

@@ -7,6 +7,7 @@
 import "./elements/leaderboard";
 import './elements/person-details';
 import './elements/test-component';
+import "./elements/modal";
 import { Router } from '@vaadin/router';
 declare const router: Router;
 export { router };

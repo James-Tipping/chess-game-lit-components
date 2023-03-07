@@ -15,6 +15,8 @@
 import "./elements/leaderboard";
 import './elements/person-details';
 import './elements/test-component';
+// import './elements/error-view';
+import "./elements/modal";
 import { Router } from '@vaadin/router';
 const router = new Router(document.getElementById('body'));
 router.setRoutes([

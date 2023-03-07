@@ -8,45 +8,81 @@ export class Modal extends LitElement {
   @property()
   username!: string;
 
-  static styles = css`
-    .modal-container {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgb(0, 0, 0, 0.4);
-    }
-    .modal-content {
-      margin: auto;
-      padding: 1rem;
-      width: 50%;
-      height: auto;
-    }
-  `;
-
-  handleClickOffModal(e: Event) {
+  constructor() {
+    super();
     this.username = "";
-    this.dispatchEvent(
-      new CustomEvent("click-off-modal", {
-        detail: {
-          clickOffModal: true,
-        },
-      })
-    );
+    console.log(`username is: ${this.username}`);
+  }
+
+  // connectedCallback() {
+  //   super.connectedCallback();
+  //   if (this.username) {
+  //     document.addEventListener("click", () =>
+  //       this.dispatchEvent(new CustomEvent("close-modal"))
+  //     );
+  //   }
+  // }
+
+  // disconnectedCallback() {
+  //   super.disconnectedCallback();
+  //   document.removeEventListener("click", () =>
+  //     this.dispatchEvent(new CustomEvent("close-modal"))
+  //   );
+  // }
+
+  // handleClickOffModal() {
+  //   this.username = "";
+  //   this.dispatchEvent(
+  //     new CustomEvent("click-off-modal", {
+  //       detail: {
+  //         clickOffModal: true,
+  //       },
+  //     })
+  //   );
+  // }
+
+  closeModal() {
+    this.dispatchEvent(new CustomEvent("close-modal"));
   }
 
   render() {
+    console.log(this.username);
     const styles = { display: this.username.length > 1 ? "block" : "none" };
     return html`
-      <div class="modal-container" style=${styleMap(styles)}>
+      <div
+        class="modal-container"
+        style=${styleMap(styles)}
+        @click=${this.closeModal}
+      >
         <div className="modal-content">
           ${ErrorSvg}
-          <p>Sorry, there is no data for "${this.username} available"</p>
+          <p>Sorry, there is no data for user "${this.username}"" available</p>
         </div>
       </div>
     `;
   }
+
+  static styles = css`
+    :host {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+    svg {
+      height: 3rem;
+      width: auto;
+    }
+  `;
 }
