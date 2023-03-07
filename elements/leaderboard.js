@@ -44,6 +44,7 @@ let Leaderboard = class Leaderboard extends LitElement {
         }
     }
     closeModal() {
+        console.log('Leadberoard.ts close modal');
         this.modalStatus = {
             isModalOpen: false,
             usernameNoMatchData: "",

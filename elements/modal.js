@@ -14,33 +14,33 @@ let Modal = class Modal extends LitElement {
         this.username = "";
         console.log(`username is: ${this.username}`);
     }
-    // connectedCallback() {
-    //   super.connectedCallback();
-    //   if (this.username) {
-    //     document.addEventListener("click", () =>
-    //       this.dispatchEvent(new CustomEvent("close-modal"))
-    //     );
-    //   }
-    // }
-    // disconnectedCallback() {
-    //   super.disconnectedCallback();
-    //   document.removeEventListener("click", () =>
-    //     this.dispatchEvent(new CustomEvent("close-modal"))
-    //   );
-    // }
+    closeModal2() {
+        console.log('Close modal 2');
+        this.dispatchEvent(new CustomEvent("close-modal"));
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        if (this.username) {
+            document.addEventListener("click", this.closeModal2);
+        }
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        document.removeEventListener("click", this.closeModal2);
+    }
     // handleClickOffModal() {
     //   this.username = "";
     //   this.dispatchEvent(
-    //     new CustomEvent("click-off-modal", {
+    //     new CustomEvent("close-modal", {
     //       detail: {
     //         clickOffModal: true,
     //       },
     //     })
     //   );
     // }
-    closeModal() {
-        this.dispatchEvent(new CustomEvent("close-modal"));
-    }
+    // closeModal() {
+    //   this.dispatchEvent(new CustomEvent("close-modal"));
+    // }
     render() {
         console.log(this.username);
         const styles = { display: this.username.length > 1 ? "block" : "none" };
@@ -48,7 +48,6 @@ let Modal = class Modal extends LitElement {
       <div
         class="modal-container"
         style=${styleMap(styles)}
-        @click=${this.closeModal}
       >
         <div className="modal-content">
           ${ErrorSvg}
