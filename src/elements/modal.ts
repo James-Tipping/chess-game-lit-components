@@ -14,21 +14,22 @@ export class Modal extends LitElement {
     console.log(`username is: ${this.username}`);
   }
 
-  private closeModal2() {
+  private closeModal2(e: Event) {
     console.log('Close modal 2');
+    console.log(`Event is: ${e.target}`);
     this.dispatchEvent(new CustomEvent("close-modal"));
   }
 
   connectedCallback() {
     super.connectedCallback();
     if (this.username) {
-      document.addEventListener("click", this.closeModal2);
+      this.addEventListener("click", this.closeModal2);
     }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    document.removeEventListener("click", this.closeModal2);
+    this.removeEventListener("click", this.closeModal2);
   }
 
   // handleClickOffModal() {
