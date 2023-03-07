@@ -52,17 +52,15 @@ export class Leaderboard extends LitElement {
     if (matchId !== "None") {
       Router.go(router.urlForPath(`/match${matchId}`));
     } else {
-      console.log("No match for this user - leaderboard.ts");
-      console.log(`name is: ${name}`);
       this.modalStatus = {
         isModalOpen: true,
         usernameNoMatchData: name,
       };
     }
   }
-
+  //
   closeModal() {
-    console.log('Leadberoard.ts close modal');
+    console.log("Leadberoard.ts close modal");
     this.modalStatus = {
       isModalOpen: false,
       usernameNoMatchData: "",
@@ -77,11 +75,10 @@ export class Leaderboard extends LitElement {
   render() {
     return html`
       ${this.modalStatus.isModalOpen
-        ? html`
-      <no-data-modal
-        .username=${this.modalStatus.usernameNoMatchData}
-        @close-modal=${this.closeModal}
-      ></no-data-modal>`
+        ? html` <no-data-modal
+            .username=${this.modalStatus.usernameNoMatchData}
+            @close-modal=${this.closeModal}
+          ></no-data-modal>`
         : nothing}
       <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
