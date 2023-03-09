@@ -76,5 +76,16 @@ export class DataStore {
             return playersData;
         }
     }
+    async getPlayerScores() {
+        if (!this.data) {
+            await this.getData();
+        }
+        const arrayOfScores = [];
+        this.data.players.forEach(player => {
+            arrayOfScores.push(player.points);
+        });
+        const setOfScores = new Set(arrayOfScores);
+        return setOfScores;
+    }
 }
 //# sourceMappingURL=DataStore.js.map

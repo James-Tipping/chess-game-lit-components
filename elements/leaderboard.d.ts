@@ -1,23 +1,16 @@
 import { LitElement } from "lit";
-import { PlayerType, DataType } from "./DataStore";
 export declare class Leaderboard extends LitElement {
-    data: DataType;
-    players: PlayerType[];
+    private playerScores;
+    private players;
     private dataStoreInstance;
-    modalStatus: {
-        isModalOpen: boolean;
-        usernameNoMatchData: string;
-    };
-    name: string;
-    errorMessage: {
-        showErrorMessage: boolean;
-        message: string;
-    };
+    private modalStatus;
+    private name;
     constructor();
     connectedCallback(): Promise<void>;
     handleMatchRequest(e: CustomEvent): Promise<void>;
     closeModal(): void;
     handleInputChange(e: InputEvent): Promise<void>;
+    getPlayerScores(): Promise<number[]>;
     render(): import("lit-html").TemplateResult<1>;
     static styles: import("lit").CSSResult;
 }

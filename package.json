@@ -41,7 +41,13 @@
   "author": "Google LLC",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@vaadin/context-menu": "^24.0.0",
+    "@vaadin/icons": "^24.0.0",
+    "@vaadin/list-box": "^24.0.0",
+    "@vaadin/multi-select-combo-box": "^24.0.0",
     "@vaadin/router": "^1.7.4",
+    "@vaadin/text-field": "^24.0.0",
+    "@vaadin/tooltip": "^24.0.0",
     "lit": "^2.2.4"
   },
   "devDependencies": {

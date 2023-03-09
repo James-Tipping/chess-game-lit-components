@@ -12,10 +12,6 @@ import { Router } from "@vaadin/router";
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
-        this.errorMessage = {
-            showErrorMessage: false,
-            message: "",
-        };
         this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
         this.modalStatus = {
@@ -27,6 +23,7 @@ let Leaderboard = class Leaderboard extends LitElement {
         super.connectedCallback();
         await this.dataStoreInstance.getData();
         this.players = await this.dataStoreInstance.getPlayersDetails();
+        this.playerScores = await this.getPlayerScores();
     }
     async handleMatchRequest(e) {
         const name = e.detail.name;
@@ -53,6 +50,10 @@ let Leaderboard = class Leaderboard extends LitElement {
         this.name = e.target.value;
         this.players = await this.dataStoreInstance.getPlayersDetails(this.name);
     }
+    async getPlayerScores() {
+        const playerScores = [...await this.dataStoreInstance.getPlayerScores()];
+        return playerScores;
+    }
     render() {
         var _a;
         return html `
@@ -64,11 +65,22 @@ let Leaderboard = class Leaderboard extends LitElement {
             : nothing}
       <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
-        <input
+        <vaadin-text-field
           .value=${this.name}
           @input=${this.handleInputChange}
-          placeholder="Search for a username"
-        />
+          placeholder="Search Username"
+          clear-button-visible
+        >
+          <vaadin-icon
+            icon="vaadin:search"
+            aria-label="search"
+            slot="prefix"
+            stroke="white"
+          ></vaadin-icon>
+        </vaadin-text-field>
+        <vaadin-multi-select-combo-box .items=${this.playerScores} clear-button-visible>
+          
+        </vaadin-multi-select-combo-box>
         <div class="scrollable-leaderboard-div">
           ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
             return html `
@@ -91,17 +103,20 @@ Leaderboard.styles = css `
     .title {
       font-size: 3rem;
     }
+    vaadin-text-field {
+      width: 80%;
+      margin: auto;
+    }
     input {
       font-family: "Poppins", sans-serif;
-      width: 80%;
-      border-radius: 0.5rem;
-      color: var(--pink-custom);
+      /* border-radius: 0.5rem; */
+      /* color: var(--pink-custom); */
     }
-    input:focus {
+    /* input:focus {
       border-color: var(--pink-custom);
       border-style: solid;
       outline: none;
-    }
+    } */
     .scrollable-leaderboard-div {
       margin-top: 3rem;
       overflow-y: auto;
@@ -119,8 +134,8 @@ Leaderboard.styles = css `
     }
   `;
 __decorate([
-    property({ type: Object })
-], Leaderboard.prototype, "data", void 0);
+    property()
+], Leaderboard.prototype, "playerScores", void 0);
 __decorate([
     property({ type: Array })
 ], Leaderboard.prototype, "players", void 0);
@@ -133,9 +148,6 @@ __decorate([
 __decorate([
     property()
 ], Leaderboard.prototype, "name", void 0);
-__decorate([
-    state()
-], Leaderboard.prototype, "errorMessage", void 0);
 Leaderboard = __decorate([
     customElement("leader-dashboard")
 ], Leaderboard);

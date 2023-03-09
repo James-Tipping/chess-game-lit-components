@@ -6,9 +6,8 @@ import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
 import { DataStore, MatchType } from "./DataStore";
 import { Router } from "@vaadin/router";
 
-@customElement('match-view')
+@customElement("match-view")
 export class MatchView extends LitElement {
-
   @state()
   private matchData: MatchType | undefined;
 
@@ -27,16 +26,29 @@ export class MatchView extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     this.location = router.location;
-    this.matchData = await this.dataStoreInstance.getMatchFromId(this.location.params.id.toString());
+    this.matchData = await this.dataStoreInstance.getMatchFromId(
+      this.location.params.id.toString()
+    );
   }
 
   handleBackButtonClick() {
-    Router.go(router.urlForPath('/'));
+    Router.go(router.urlForPath("/"));
   }
 
+  text = `
+    WIN: The player won by any method \n
+    RESIGNED: The player lost by choosing to forfeit \n
+    CHECKMATED: The player lost due to being checkmated \n
+    TIMEOUT: The player lost due to running out of time \n
+  `;
+
   render() {
-    const whiteStyles = { color: this.matchData?.white.result === 'win' ? 'blue' : 'red'}
-    const blackStyles = { color: this.matchData?.black.result === 'win' ? 'blue' : 'red'}
+    const whiteStyles = {
+      color: this.matchData?.white.result === "win" ? "blue" : "red",
+    };
+    const blackStyles = {
+      color: this.matchData?.black.result === "win" ? "blue" : "red",
+    };
     return html`
       <div class="header">
         <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
@@ -46,12 +58,20 @@ export class MatchView extends LitElement {
             <div class="chess-piece-svg">${WhiteKingSvg}</div>
             <div class="user-data" style=${styleMap(whiteStyles)}>
               <p><b>${this.matchData?.white.username}</b></p>
-              <p>${this.matchData?.white.result.toUpperCase()}</p>
+              <p>${this.matchData?.white.result.toUpperCase()}
+              <vaadin-icon id="tooltip-icon1" icon="vaadin:info-circle"></vaadin-icon>
+              <vaadin-tooltip for="tooltip-icon1" slot="tooltip" text=${this.text}></vaadin-tooltip>
+              </p>
               <p>Rating: ${this.matchData?.white.rating}</p>
             </div>
             <div class="user-data" style=${styleMap(blackStyles)}>
               <p><b>${this.matchData?.black.username}</b></p>
-              <p>${this.matchData?.black.result.toUpperCase()}</p>
+              <p><span>
+                ${this.matchData?.black.result.toUpperCase()}
+                <vaadin-icon id="tooltip-icon2" icon="vaadin:info-circle"></vaadin-icon>
+                <vaadin-tooltip for="tooltip-icon2" slot="tooltip" text=${this.text}></vaadin-tooltip>
+                </span>
+              </p>
               <p>Rating: ${this.matchData?.black.rating}</p>
             </div>
             <div class="chess-piece-svg">${BlackKingSvg}</div>
@@ -59,7 +79,6 @@ export class MatchView extends LitElement {
         </div>
       </div>
       `;
-
   }
 
   static styles = css`
@@ -83,10 +102,22 @@ export class MatchView extends LitElement {
     .chess-piece-svg {
       margin: auto;
     }
+    .user-data {
+      display: inline-block;
+    }
     svg {
       height: 5rem;
       width: auto;
     }
+    /* vaadin-icon {
+      display: inline-block;
+      height: 3.5rem;
+      width: auto;
+      color: white;
+    } */
+    /* vaadin-tooltip-overlay::part() {
+      white-space: pre-line;
+    } */
     button {
       background-color: transparent;
       outline: none;
@@ -101,5 +132,4 @@ export class MatchView extends LitElement {
       fill: gray;
     }
   `;
-
 }

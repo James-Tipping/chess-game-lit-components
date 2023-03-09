@@ -128,4 +128,16 @@ export class DataStore {
       return playersData;
     }
   }
+
+  async getPlayerScores() : Promise<Set<number>> {
+    if (!this.data) {
+      await this.getData();
+    }
+    const arrayOfScores: number[] = [];
+    this.data.players.forEach(player => {
+      arrayOfScores.push(player.points)
+    });
+    const setOfScores = new Set(arrayOfScores);
+    return setOfScores;
+  }
 }

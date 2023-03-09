@@ -6,6 +6,7 @@ export declare class MatchView extends LitElement {
     constructor();
     connectedCallback(): Promise<void>;
     handleBackButtonClick(): void;
+    text: string;
     render(): import("lit-html").TemplateResult<1>;
     static styles: import("lit").CSSResult;
 }

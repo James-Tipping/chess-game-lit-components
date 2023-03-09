@@ -6,29 +6,25 @@ import { Router } from "@vaadin/router";
 
 @customElement("leader-dashboard")
 export class Leaderboard extends LitElement {
-  @property({ type: Object })
-  data!: DataType;
+
+  @property()
+  private playerScores!: number[];
 
   @property({ type: Array })
-  players!: PlayerType[];
+  private players!: PlayerType[];
 
   @state()
   private dataStoreInstance: DataStore;
 
   @state()
-  modalStatus: {
+  private modalStatus: {
     isModalOpen: boolean;
     usernameNoMatchData: string;
   };
 
   @property()
-  name: string;
+  private name: string;
 
-  @state()
-  errorMessage = {
-    showErrorMessage: false,
-    message: "",
-  };
 
   constructor() {
     super();
@@ -44,6 +40,7 @@ export class Leaderboard extends LitElement {
     super.connectedCallback();
     await this.dataStoreInstance.getData();
     this.players = await this.dataStoreInstance.getPlayersDetails();
+    this.playerScores = await this.getPlayerScores();
   }
 
   async handleMatchRequest(e: CustomEvent) {
@@ -72,6 +69,12 @@ export class Leaderboard extends LitElement {
     this.players = await this.dataStoreInstance.getPlayersDetails(this.name);
   }
 
+  async getPlayerScores() {
+    const playerScores = [...await this.dataStoreInstance.getPlayerScores()];
+    return playerScores;
+  }
+
+
   render() {
     return html`
       ${this.modalStatus.isModalOpen
@@ -82,11 +85,22 @@ export class Leaderboard extends LitElement {
         : nothing}
       <div class="leaderboard" @match-requested=${this.handleMatchRequest}>
         <h3 class="title">Leaderboard</h3>
-        <input
+        <vaadin-text-field
           .value=${this.name}
           @input=${this.handleInputChange}
-          placeholder="Search for a username"
-        />
+          placeholder="Search Username"
+          clear-button-visible
+        >
+          <vaadin-icon
+            icon="vaadin:search"
+            aria-label="search"
+            slot="prefix"
+            stroke="white"
+          ></vaadin-icon>
+        </vaadin-text-field>
+        <vaadin-multi-select-combo-box .items=${this.playerScores} clear-button-visible>
+          
+        </vaadin-multi-select-combo-box>
         <div class="scrollable-leaderboard-div">
           ${this.players?.map((player) => {
             return html`
@@ -109,17 +123,20 @@ export class Leaderboard extends LitElement {
     .title {
       font-size: 3rem;
     }
+    vaadin-text-field {
+      width: 80%;
+      margin: auto;
+    }
     input {
       font-family: "Poppins", sans-serif;
-      width: 80%;
-      border-radius: 0.5rem;
-      color: var(--pink-custom);
+      /* border-radius: 0.5rem; */
+      /* color: var(--pink-custom); */
     }
-    input:focus {
+    /* input:focus {
       border-color: var(--pink-custom);
       border-style: solid;
       outline: none;
-    }
+    } */
     .scrollable-leaderboard-div {
       margin-top: 3rem;
       overflow-y: auto;
