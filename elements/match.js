@@ -89,6 +89,7 @@ MatchView.styles = css `
       border: 0.2rem solid rgb(183, 68, 184);
       background-color: white;
       border-radius: 1rem;
+      min-width: 60vw;
     }
     .chess-piece-svg {
       margin: auto;
