@@ -3,12 +3,15 @@ import { customElement, property, state } from "lit/decorators.js";
 import { DataStore, MatchType, PlayerType, DataType } from "./DataStore";
 import { router } from "../main";
 import { Router } from "@vaadin/router";
+import type { MultiSelectComboBoxSelectedItemsChangedEvent } from "@vaadin/multi-select-combo-box";
 
 @customElement("leader-dashboard")
 export class Leaderboard extends LitElement {
-
   @property()
   private playerScores!: number[];
+
+  @property()
+  private selectedPlayerScores: number[] = [];
 
   @property({ type: Array })
   private players!: PlayerType[];
@@ -25,7 +28,6 @@ export class Leaderboard extends LitElement {
   @property()
   private name: string;
 
-
   constructor() {
     super();
     this.dataStoreInstance = DataStore.getInstance();
@@ -39,7 +41,7 @@ export class Leaderboard extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.dataStoreInstance.getData();
-    this.players = await this.dataStoreInstance.getPlayersDetails();
+    this.players = await this.dataStoreInstance.getPlayersDetails([]);
     this.playerScores = await this.getPlayerScores();
   }
 
@@ -64,16 +66,20 @@ export class Leaderboard extends LitElement {
     };
   }
 
-  async handleInputChange(e: InputEvent) {
-    this.name = (e.target as HTMLInputElement).value;
-    this.players = await this.dataStoreInstance.getPlayersDetails(this.name);
+  async handleInputChange(e: InputEvent | MultiSelectComboBoxSelectedItemsChangedEvent<number>) {
+    if (e instanceof InputEvent) {
+      this.name = (e.target as HTMLInputElement).value;
+      this.players = await this.dataStoreInstance.getPlayersDetails(this.selectedPlayerScores, this.name);
+    } else {
+      this.selectedPlayerScores = e.detail.value;
+      this.players = await this.dataStoreInstance.getPlayersDetails(this.selectedPlayerScores, this.name)
+    }
   }
 
   async getPlayerScores() {
-    const playerScores = [...await this.dataStoreInstance.getPlayerScores()];
+    const playerScores = [...(await this.dataStoreInstance.getPlayerScores())];
     return playerScores;
   }
-
 
   render() {
     return html`
@@ -98,8 +104,13 @@ export class Leaderboard extends LitElement {
             stroke="white"
           ></vaadin-icon>
         </vaadin-text-field>
-        <vaadin-multi-select-combo-box .items=${this.playerScores} clear-button-visible>
-          
+        <vaadin-multi-select-combo-box
+          .items=${this.playerScores}
+          clear-button-visible
+          .selectedItems=${this.selectedPlayerScores}
+          @selected-items-changed=${this.handleInputChange}
+          placeholder="Choose Score"
+        >
         </vaadin-multi-select-combo-box>
         <div class="scrollable-leaderboard-div">
           ${this.players?.map((player) => {
@@ -119,29 +130,26 @@ export class Leaderboard extends LitElement {
     .leaderboard {
       width: 50%;
       margin: auto;
+      max-height: 100vh;
     }
     .title {
       font-size: 3rem;
     }
     vaadin-text-field {
-      width: 80%;
+      width: 100%;
+      margin: auto;
+    }
+    vaadin-multi-select-combo-box {
+      width: 100%;
       margin: auto;
     }
     input {
       font-family: "Poppins", sans-serif;
-      /* border-radius: 0.5rem; */
-      /* color: var(--pink-custom); */
     }
-    /* input:focus {
-      border-color: var(--pink-custom);
-      border-style: solid;
-      outline: none;
-    } */
     .scrollable-leaderboard-div {
       margin-top: 3rem;
-      overflow-y: auto;
+      overflow-y: scroll;
       max-height: 70vh;
-      /* display: none; */
       -ms-overflow-style: none;
       scrollbar-width: none;
     }

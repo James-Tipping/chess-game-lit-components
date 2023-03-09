@@ -1,6 +1,8 @@
 import { LitElement } from "lit";
+import type { MultiSelectComboBoxSelectedItemsChangedEvent } from "@vaadin/multi-select-combo-box";
 export declare class Leaderboard extends LitElement {
     private playerScores;
+    private selectedPlayerScores;
     private players;
     private dataStoreInstance;
     private modalStatus;
@@ -9,7 +11,7 @@ export declare class Leaderboard extends LitElement {
     connectedCallback(): Promise<void>;
     handleMatchRequest(e: CustomEvent): Promise<void>;
     closeModal(): void;
-    handleInputChange(e: InputEvent): Promise<void>;
+    handleInputChange(e: InputEvent | MultiSelectComboBoxSelectedItemsChangedEvent<number>): Promise<void>;
     getPlayerScores(): Promise<number[]>;
     render(): import("lit-html").TemplateResult<1>;
     static styles: import("lit").CSSResult;

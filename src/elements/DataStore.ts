@@ -116,14 +116,31 @@ export class DataStore {
     return match;
   }
 
-  async getPlayersDetails(usernameSearchString?: string): Promise<PlayerType[]> {
+  async getPlayersDetails(playersScoreSearch: number[], usernameSearchString?: string): Promise<PlayerType[]> {
     if (!this.data) {
       await this.getData();
     }
-    if (usernameSearchString) {
+    // console.log(Array.isArray(playersScoreSearch));
+    // console.log(`playersScoreSearch = ${typeof playersScoreSearch}`)
+    // console.log(typeof []);
+    // console.log(`playersScoreSearch.length = ${playersScoreSearch.length}`);
+    // console.log(`playersScoreSearch = ${playersScoreSearch}`)
+    // console.log(`usernameSearchString = ${usernameSearchString}`);
+    if (usernameSearchString && playersScoreSearch.length === 0) {
+      // console.log('condition 1')
       const playersData = this.data.players.filter(player => player.username.includes(usernameSearchString));
       return playersData;
+    } else if (playersScoreSearch.length > 0  && !usernameSearchString) {
+      // console.log('condition 2')
+      const playersData = this.data.players.filter(player => playersScoreSearch.includes(player.points));
+      return playersData;
+    } else if (usernameSearchString && playersScoreSearch.length > 0) {
+      // console.log('condition 3')
+      const playersData = this.data.players.filter(player => player.username.includes(usernameSearchString)
+      && playersScoreSearch.includes(player.points));
+      return playersData;
     } else {
+      // console.log('condition 4')
       const playersData = this.data.players;
       return playersData;
     }

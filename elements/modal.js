@@ -12,56 +12,12 @@ let Modal = class Modal extends LitElement {
         super();
         // this.username is the username of the player who has no match data
         this.username = "";
-        console.log(`username is: ${this.username}`);
     }
-    // private closeModal2(e: Event) {
-    //   console.log('Close modal 2');
-    //   console.log(`Event is: ${e.target}`);
-    //   this.dispatchEvent(new CustomEvent("close-modal", {
-    //     detail: 'Close modal',
-    //     bubbles: true
-    //   }));
-    // }
-    // callbacks add an event listener to the document for all clicks
-    // These are then directed to this.closeModal, which assessed whether clicks were inside or outside of the modal.
-    // connectedCallback() {
-    //   super.connectedCallback();
-    //   if (this.username) {
-    //     // this.addEventListener("click", this.closeModal);
-    //     document.addEventListener("click", this.closeModal);
-    //   }
-    // }
-    // disconnectedCallback() {
-    //   super.disconnectedCallback();
-    //   // this.removeEventListener("click", this.closeModal);
-    //   document.removeEventListener("click", this.closeModal);
-    // }
-    // handleClickOffModal() {
-    //   this.username = "";
-    //   this.dispatchEvent(
-    //     new CustomEvent("close-modal", {
-    //       detail: {
-    //         clickOffModal: true,
-    //       },
-    //     })
-    //   );
-    // }
-    // If mouse click occurs outside modal, customEvent created which bubbles up.
-    // This seems to function correctly up to line 60, as I can't find the right thing to equate it to, to check the element that was clicked on
-    // It also seems to be called when the modal first appears
     closeModal(e) {
-        console.log("Close model called");
-        console.log(`Event is ${e.target.nodeValue}`);
-        console.log("Event dispatched");
         this.dispatchEvent(new CustomEvent("close-modal", {
             bubbles: true,
         }));
     }
-    // Prevents event propagating if the click occurs inside the modal area. There seems to be an automatic event on every mouse click within the app.
-    // clickInside(e: Event) {
-    //   e.stopPropagation();
-    //   console.log('Click inside');
-    // }
     render() {
         return html `
       <div class="background" @click=${this.closeModal}></div>

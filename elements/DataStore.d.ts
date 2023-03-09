@@ -74,7 +74,7 @@ export declare class DataStore {
             result: string;
         };
     }>;
-    getPlayersDetails(usernameSearchString?: string): Promise<PlayerType[]>;
+    getPlayersDetails(playersScoreSearch: number[], usernameSearchString?: string): Promise<PlayerType[]>;
     getPlayerScores(): Promise<Set<number>>;
 }
 //# sourceMappingURL=DataStore.d.ts.map

@@ -9,13 +9,15 @@
 
 .body {
     min-width: 100vw;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background-color: var(--light-blue-custom);
 }
 
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
+    /* max-height: 100vh; */
     /* overflow-y: hidden; */
 }
 

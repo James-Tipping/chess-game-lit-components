@@ -12,6 +12,7 @@ import { Router } from "@vaadin/router";
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
+        this.selectedPlayerScores = [];
         this.dataStoreInstance = DataStore.getInstance();
         this.name = "";
         this.modalStatus = {
@@ -22,7 +23,7 @@ let Leaderboard = class Leaderboard extends LitElement {
     async connectedCallback() {
         super.connectedCallback();
         await this.dataStoreInstance.getData();
-        this.players = await this.dataStoreInstance.getPlayersDetails();
+        this.players = await this.dataStoreInstance.getPlayersDetails([]);
         this.playerScores = await this.getPlayerScores();
     }
     async handleMatchRequest(e) {
@@ -47,11 +48,17 @@ let Leaderboard = class Leaderboard extends LitElement {
         };
     }
     async handleInputChange(e) {
-        this.name = e.target.value;
-        this.players = await this.dataStoreInstance.getPlayersDetails(this.name);
+        if (e instanceof InputEvent) {
+            this.name = e.target.value;
+            this.players = await this.dataStoreInstance.getPlayersDetails(this.selectedPlayerScores, this.name);
+        }
+        else {
+            this.selectedPlayerScores = e.detail.value;
+            this.players = await this.dataStoreInstance.getPlayersDetails(this.selectedPlayerScores, this.name);
+        }
     }
     async getPlayerScores() {
-        const playerScores = [...await this.dataStoreInstance.getPlayerScores()];
+        const playerScores = [...(await this.dataStoreInstance.getPlayerScores())];
         return playerScores;
     }
     render() {
@@ -78,8 +85,13 @@ let Leaderboard = class Leaderboard extends LitElement {
             stroke="white"
           ></vaadin-icon>
         </vaadin-text-field>
-        <vaadin-multi-select-combo-box .items=${this.playerScores} clear-button-visible>
-          
+        <vaadin-multi-select-combo-box
+          .items=${this.playerScores}
+          clear-button-visible
+          .selectedItems=${this.selectedPlayerScores}
+          @selected-items-changed=${this.handleInputChange}
+          placeholder="Choose Score"
+        >
         </vaadin-multi-select-combo-box>
         <div class="scrollable-leaderboard-div">
           ${(_a = this.players) === null || _a === void 0 ? void 0 : _a.map((player) => {
@@ -99,29 +111,26 @@ Leaderboard.styles = css `
     .leaderboard {
       width: 50%;
       margin: auto;
+      max-height: 100vh;
     }
     .title {
       font-size: 3rem;
     }
     vaadin-text-field {
-      width: 80%;
+      width: 100%;
+      margin: auto;
+    }
+    vaadin-multi-select-combo-box {
+      width: 100%;
       margin: auto;
     }
     input {
       font-family: "Poppins", sans-serif;
-      /* border-radius: 0.5rem; */
-      /* color: var(--pink-custom); */
     }
-    /* input:focus {
-      border-color: var(--pink-custom);
-      border-style: solid;
-      outline: none;
-    } */
     .scrollable-leaderboard-div {
       margin-top: 3rem;
-      overflow-y: auto;
+      overflow-y: scroll;
       max-height: 70vh;
-      /* display: none; */
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
@@ -136,6 +145,9 @@ Leaderboard.styles = css `
 __decorate([
     property()
 ], Leaderboard.prototype, "playerScores", void 0);
+__decorate([
+    property()
+], Leaderboard.prototype, "selectedPlayerScores", void 0);
 __decorate([
     property({ type: Array })
 ], Leaderboard.prototype, "players", void 0);

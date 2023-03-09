@@ -58,10 +58,10 @@ export class MatchView extends LitElement {
             <div class="chess-piece-svg">${WhiteKingSvg}</div>
             <div class="user-data" style=${styleMap(whiteStyles)}>
               <p><b>${this.matchData?.white.username}</b></p>
-              <p>${this.matchData?.white.result.toUpperCase()}
+              <p><span>${this.matchData?.white.result.toUpperCase()}
               <vaadin-icon id="tooltip-icon1" icon="vaadin:info-circle"></vaadin-icon>
               <vaadin-tooltip for="tooltip-icon1" slot="tooltip" text=${this.text}></vaadin-tooltip>
-              </p>
+              </span></p>
               <p>Rating: ${this.matchData?.white.rating}</p>
             </div>
             <div class="user-data" style=${styleMap(blackStyles)}>
@@ -108,6 +108,18 @@ export class MatchView extends LitElement {
     svg {
       height: 5rem;
       width: auto;
+    }
+    vaadin-icon {
+      height: 1rem;
+      width: auto;
+    }
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    span > * {
+      margin: 0 0.2rem;
     }
     /* vaadin-icon {
       display: inline-block;

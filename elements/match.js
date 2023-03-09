@@ -49,10 +49,10 @@ let MatchView = class MatchView extends LitElement {
             <div class="chess-piece-svg">${WhiteKingSvg}</div>
             <div class="user-data" style=${styleMap(whiteStyles)}>
               <p><b>${(_c = this.matchData) === null || _c === void 0 ? void 0 : _c.white.username}</b></p>
-              <p>${(_d = this.matchData) === null || _d === void 0 ? void 0 : _d.white.result.toUpperCase()}
+              <p><span>${(_d = this.matchData) === null || _d === void 0 ? void 0 : _d.white.result.toUpperCase()}
               <vaadin-icon id="tooltip-icon1" icon="vaadin:info-circle"></vaadin-icon>
               <vaadin-tooltip for="tooltip-icon1" slot="tooltip" text=${this.text}></vaadin-tooltip>
-              </p>
+              </span></p>
               <p>Rating: ${(_e = this.matchData) === null || _e === void 0 ? void 0 : _e.white.rating}</p>
             </div>
             <div class="user-data" style=${styleMap(blackStyles)}>
@@ -99,6 +99,18 @@ MatchView.styles = css `
     svg {
       height: 5rem;
       width: auto;
+    }
+    vaadin-icon {
+      height: 1rem;
+      width: auto;
+    }
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    span > * {
+      margin: 0 0.2rem;
     }
     /* vaadin-icon {
       display: inline-block;
