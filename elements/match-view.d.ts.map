@@ -1,0 +1,1 @@
+{"version":3,"file":"match-view.d.ts","sourceRoot":"","sources":["../src/elements/match-view.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,UAAU,EAAE,MAAM,KAAK,CAAC;AAM5C,qBACa,SAAU,SAAQ,UAAU;IAGvC,OAAO,CAAC,SAAS,CAAwB;IAGzC,OAAO,CAAC,iBAAiB,CAAY;IAGrC,OAAO,EAAG,MAAM,CAAA;;IAQV,iBAAiB;IAOvB,qBAAqB;IAOrB,IAAI,SAKF;IAEF,MAAM;IAwCN,MAAM,CAAC,MAAM,0BA+DX;CACH"}

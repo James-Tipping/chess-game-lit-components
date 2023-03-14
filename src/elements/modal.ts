@@ -14,7 +14,7 @@ export class Modal extends LitElement {
     this.username = "";
   }
 
-  closeModal(e: MouseEvent) {
+  closeModal() {
     this.dispatchEvent(
       new CustomEvent("close-modal", {
         bubbles: true,

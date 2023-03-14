@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from "lit";
 import { property, customElement } from "lit/decorators.js";
-import { DataStore, PlayerType } from "./DataStore";
+import { PlayerType } from "./DataStore";
 
 
 @customElement('person-details')

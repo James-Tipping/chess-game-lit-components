@@ -2,7 +2,7 @@ import { LitElement } from "lit";
 export declare class Modal extends LitElement {
     username: string;
     constructor();
-    closeModal(e: MouseEvent): void;
+    closeModal(): void;
     render(): import("lit-html").TemplateResult<1>;
     static styles: import("lit").CSSResult;
 }

@@ -1,12 +1,7 @@
-/**
- * weqweyieu
- * wqeiqwopeiqe
- * eiqeiepeo
- *
- */
 import "./elements/leaderboard";
 import './elements/person-details';
-import './elements/test-component';
+import "./elements/match-route-controller";
+import './elements/match-view';
 import "./elements/modal";
 import "@vaadin/text-field";
 import "@vaadin/icons";

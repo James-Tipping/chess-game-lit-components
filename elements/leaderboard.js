@@ -9,6 +9,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { DataStore } from "./DataStore";
 import { router } from "../main";
 import { Router } from "@vaadin/router";
+debugger;
 let Leaderboard = class Leaderboard extends LitElement {
     constructor() {
         super();
@@ -63,6 +64,7 @@ let Leaderboard = class Leaderboard extends LitElement {
     }
     render() {
         var _a;
+        console.log('leader render');
         return html `
       ${this.modalStatus.isModalOpen
             ? html ` <no-data-modal
@@ -141,6 +143,7 @@ Leaderboard.styles = css `
       height: 5rem;
       width: auto;
     }
+    
   `;
 __decorate([
     property()

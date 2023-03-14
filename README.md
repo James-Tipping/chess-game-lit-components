@@ -132,3 +132,20 @@ For information on building application projects that include LitElement compone
 ## More information
 
 See [Get started](https://lit.dev/docs/getting-started/) on the Lit site for more information.
+
+
+# Personal tests
+
+- To run tests, run in terminal: 
+
+```bash
+npx web-test-runner test/**/*.test.js --node-resolve --watch
+```
+
+- Can also be run (after being added to package.json) by running:
+
+```bash
+npm run test3
+```
+
+> Tests are run using chai through the web-test-runner. For more information, see [Test Runner Docs](https://modern-web.dev/guides/test-runner/getting-started/#setup-tools), [open-wc Docs](https://open-wc.org/docs/testing/helpers/#test-fixtures), or [Chai docs/commands](https://www.chaijs.com/plugins/chai-dom/)

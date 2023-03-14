@@ -13,7 +13,7 @@ let Modal = class Modal extends LitElement {
         // this.username is the username of the player who has no match data
         this.username = "";
     }
-    closeModal(e) {
+    closeModal() {
         this.dispatchEvent(new CustomEvent("close-modal", {
             bubbles: true,
         }));

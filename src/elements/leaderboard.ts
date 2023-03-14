@@ -5,6 +5,8 @@ import { router } from "../main";
 import { Router } from "@vaadin/router";
 import type { MultiSelectComboBoxSelectedItemsChangedEvent } from "@vaadin/multi-select-combo-box";
 
+debugger
+
 @customElement("leader-dashboard")
 export class Leaderboard extends LitElement {
   @property()
@@ -82,6 +84,7 @@ export class Leaderboard extends LitElement {
   }
 
   render() {
+    console.log('leader render');
     return html`
       ${this.modalStatus.isModalOpen
         ? html` <no-data-modal
@@ -160,5 +163,6 @@ export class Leaderboard extends LitElement {
       height: 5rem;
       width: auto;
     }
+    
   `;
 }

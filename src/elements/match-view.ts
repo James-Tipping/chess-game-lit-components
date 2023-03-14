@@ -1,13 +1,12 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { router } from "../main";
 import { styleMap } from "lit/directives/style-map.js";
 import { WhiteKingSvg, BlackKingSvg, BackButtonSvg } from "./svgs";
 import { DataStore, MatchType } from "./DataStore";
-import { Router } from "@vaadin/router";
 
 @customElement("match-view")
 export class MatchView extends LitElement {
+
   @state()
   private matchData: MatchType | undefined;
 
@@ -15,7 +14,7 @@ export class MatchView extends LitElement {
   private dataStoreInstance: DataStore;
 
   @property({ type: Object })
-  location = router.location;
+  matchId!: string
 
   constructor() {
     super();
@@ -25,14 +24,16 @@ export class MatchView extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    this.location = router.location;
     this.matchData = await this.dataStoreInstance.getMatchFromId(
-      this.location.params.id.toString()
+      this.matchId
     );
   }
 
   handleBackButtonClick() {
-    Router.go(router.urlForPath("/"));
+    this.dispatchEvent(new CustomEvent('go-back', {
+      bubbles: true
+    }));
+    // Router.go(router.urlForPath("/"));
   }
 
   text = `
@@ -43,6 +44,7 @@ export class MatchView extends LitElement {
   `;
 
   render() {
+    console.log('render')
     const whiteStyles = {
       color: this.matchData?.white.result === "win" ? "blue" : "red",
     };
@@ -51,7 +53,7 @@ export class MatchView extends LitElement {
     };
     return html`
       <div class="header">
-        <button @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
+        <button class="back-button" @click=${this.handleBackButtonClick}>${BackButtonSvg}</button>
         <h3 class="title">Match Details</h3>
       </div>
           <div class="grid-container">
